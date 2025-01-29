@@ -1,178 +1,94 @@
 import { z } from "zod";
-import type { Question, Quiz, Assignment, Resource, Module, Course, Curriculum } from "@/types/curriculum";
-import { curriculumSchema } from "@/lib/encryption";
+import type { Curriculum } from "@/types/curriculum";
 
-export const validateAndTransformQuestion = (q: any): Question => {
-  const baseQuestion = {
-    id: q.id || crypto.randomUUID(),
-    title: q.question || '',
-    description: q.explanation || '',
-    points: q.points || 0,
-    type: q.type,
-  };
-
-  switch (q.type) {
-    case 'multiple-choice':
-      return {
-        ...baseQuestion,
-        type: 'multiple-choice',
-        options: q.options || [],
-        correctAnswer: q.correctAnswer || 0,
-        allowMultiple: q.allowMultiple || false,
-      };
-    case 'essay':
-      return {
-        ...baseQuestion,
-        type: 'essay',
-        minWords: q.minWords || 0,
-        maxWords: q.maxWords || 1000,
-        rubric: q.rubric ? {
-          criteria: (q.rubric.criteria || []).map(c => ({
-            name: c.name || 'Unnamed Criterion',
-            description: c.description || 'No description provided',
-            points: c.points || 0
-          }))
-        } : { criteria: [] }
-      };
-    case 'coding':
-      return {
-        ...baseQuestion,
-        type: 'coding',
-        initialCode: q.initialCode || '',
-        testCases: (q.testCases || []).map(tc => ({
-          input: tc.input || '',
-          expectedOutput: tc.expectedOutput || ''
-        }))
-      };
-    case 'true-false':
-      return {
-        ...baseQuestion,
-        type: 'true-false',
-        correctAnswer: q.correctAnswer || false,
-      };
-    case 'short-answer':
-      return {
-        ...baseQuestion,
-        type: 'short-answer',
-        sampleAnswer: q.sampleAnswer || '',
-        keywords: q.keywords || [],
-      };
-    case 'matching':
-      return {
-        ...baseQuestion,
-        type: 'matching',
-        pairs: (q.pairs || []).map(p => ({
-          left: p.left || '',
-          right: p.right || ''
-        }))
-      };
-    default:
-      throw new Error(`Unsupported question type: ${q.type}`);
-  }
-};
-
-export const validateAndTransformResource = (resource: any): Resource => ({
-  id: resource.id || crypto.randomUUID(),
-  title: resource.title || '',
-  type: resource.type || 'document',
-  content: resource.content || '',
-  duration: resource.duration,
-  url: resource.url,
-  embedType: resource.embedType,
-  code: resource.code ? {
-    initialCode: resource.code.initialCode || '',
-    solution: resource.code.solution || '',
-    testCases: (resource.code.testCases || []).map(tc => ({
-      input: tc.input || '',
-      expectedOutput: tc.expectedOutput || ''
-    }))
-  } : undefined
+const learningObjectiveSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  assessmentCriteria: z.array(z.string())
 });
 
-export const validateAndTransformModule = (module: any): Module => ({
-  id: module.id || crypto.randomUUID(),
-  title: module.title,
-  description: module.description,
-  credits: module.credits,
-  metadata: {
-    estimatedTime: module.metadata.estimatedTime,
-    difficulty: module.metadata.difficulty,
-    prerequisites: module.metadata.prerequisites,
-    tags: module.metadata.tags,
-    skills: module.metadata.skills
-  },
-  learningObjectives: module.learningObjectives.map(obj => ({
-    id: obj.id || crypto.randomUUID(),
-    description: obj.description || '',
-    assessmentCriteria: obj.assessmentCriteria || []
-  })),
-  resources: module.resources.map(validateAndTransformResource),
-  assignments: module.assignments.map(assignment => ({
-    id: assignment.id || crypto.randomUUID(),
-    title: assignment.title,
-    description: assignment.description,
-    dueDate: assignment.dueDate,
-    points: assignment.points,
-    questions: (assignment.questions || []).map(validateAndTransformQuestion),
-    rubric: assignment.rubric ? {
-      criteria: (assignment.rubric.criteria || []).map(c => ({
-        name: c.name || 'Unnamed Criterion',
-        description: c.description || 'No description provided',
-        points: c.points || 0
-      }))
-    } : { criteria: [] }
-  })),
-  quizzes: module.quizzes.map(quiz => ({
-    id: quiz.id || crypto.randomUUID(),
-    title: quiz.title,
-    description: quiz.description,
-    questions: quiz.questions.map(validateAndTransformQuestion),
-    timeLimit: quiz.timeLimit,
-    passingScore: quiz.passingScore,
-    instructions: quiz.instructions
-  }))
+const resourceSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  type: z.enum(['video', 'document', 'article', 'code']),
+  content: z.string(),
+  duration: z.string().optional(),
+  url: z.string().optional(),
+  embedType: z.enum(['youtube']).optional()
 });
 
-export const validateAndTransformCurriculum = (rawData: any): Curriculum => {
-  const validationResult = curriculumSchema.safeParse(rawData);
+const questionSchema = z.object({
+  id: z.string(),
+  type: z.enum(['multiple-choice', 'essay', 'coding', 'true-false', 'short-answer', 'matching']),
+  title: z.string(),
+  description: z.string(),
+  points: z.number()
+});
+
+const assignmentSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  dueDate: z.string(),
+  points: z.number(),
+  questions: z.array(questionSchema).optional()
+});
+
+const quizSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  questions: z.array(questionSchema)
+});
+
+const moduleSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  credits: z.number(),
+  metadata: z.object({
+    estimatedTime: z.number(),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+    prerequisites: z.array(z.string()),
+    tags: z.array(z.string()),
+    skills: z.array(z.string())
+  }),
+  learningObjectives: z.array(learningObjectiveSchema),
+  resources: z.array(resourceSchema),
+  assignments: z.array(assignmentSchema),
+  quizzes: z.array(quizSchema)
+});
+
+const courseSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  credits: z.number(),
+  level: z.enum(['introductory', 'intermediate', 'advanced']),
+  modules: z.array(moduleSchema)
+});
+
+const degreeSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  type: z.string(),
+  description: z.string(),
+  requiredCredits: z.number(),
+  courses: z.array(courseSchema)
+});
+
+export const curriculumSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  degrees: z.array(degreeSchema)
+});
+
+export const validateAndTransformCurriculum = (data: unknown): Curriculum => {
+  const validationResult = curriculumSchema.safeParse(data);
   
   if (!validationResult.success) {
     throw new Error("Invalid curriculum format: " + JSON.stringify(validationResult.error.errors, null, 2));
   }
 
-  const { data } = validationResult;
-
-  return {
-    name: data.name,
-    description: data.description,
-    degrees: data.degrees.map(degree => ({
-      id: degree.id || crypto.randomUUID(),
-      title: degree.title,
-      type: degree.type,
-      description: degree.description,
-      requiredCredits: degree.requiredCredits,
-      courses: degree.courses.map(course => {
-        if (typeof course === 'string') {
-          // If course is a string ID, create a minimal course object
-          return {
-            id: course,
-            title: '',
-            description: '',
-            credits: 0,
-            level: 'introductory' as const,
-            modules: []
-          };
-        }
-        // If it's already a course object, ensure level is a valid CourseLevel
-        return {
-          id: course.id,
-          title: course.title,
-          description: course.description,
-          credits: course.credits,
-          level: course.level as 'introductory' | 'intermediate' | 'advanced',
-          modules: course.modules || []
-        };
-      })
-    }))
-  };
+  return validationResult.data;
 };

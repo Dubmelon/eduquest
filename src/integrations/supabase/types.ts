@@ -9,357 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      assignment_feedback: {
-        Row: {
-          assignment_id: string | null
-          created_at: string | null
-          feedback: string
-          grade: number | null
-          id: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          assignment_id?: string | null
-          created_at?: string | null
-          feedback: string
-          grade?: number | null
-          id?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          assignment_id?: string | null
-          created_at?: string | null
-          feedback?: string
-          grade?: number | null
-          id?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assignment_feedback_assignment_id_fkey"
-            columns: ["assignment_id"]
-            isOneToOne: false
-            referencedRelation: "assignments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      assignments: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          due_date: string
-          grade: number | null
-          id: string
-          status: string | null
-          title: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          due_date: string
-          grade?: number | null
-          id?: string
-          status?: string | null
-          title: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          due_date?: string
-          grade?: number | null
-          id?: string
-          status?: string | null
-          title?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assignments_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      course_modules: {
-        Row: {
-          course_id: string | null
-          created_at: string | null
-          credits: number | null
-          description: string | null
-          id: string
-          learning_objectives: Json[] | null
-          metadata: Json | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          course_id?: string | null
-          created_at?: string | null
-          credits?: number | null
-          description?: string | null
-          id?: string
-          learning_objectives?: Json[] | null
-          metadata?: Json | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          course_id?: string | null
-          created_at?: string | null
-          credits?: number | null
-          description?: string | null
-          id?: string
-          learning_objectives?: Json[] | null
-          metadata?: Json | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "course_modules_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      course_progress: {
-        Row: {
-          completed_modules: number | null
-          created_at: string | null
-          current_grade: number | null
-          id: string
-          rank: number | null
-          total_modules: number | null
-          total_students: number | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          completed_modules?: number | null
-          created_at?: string | null
-          current_grade?: number | null
-          id?: string
-          rank?: number | null
-          total_modules?: number | null
-          total_students?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          completed_modules?: number | null
-          created_at?: string | null
-          current_grade?: number | null
-          id?: string
-          rank?: number | null
-          total_modules?: number | null
-          total_students?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "course_progress_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      courses: {
-        Row: {
-          created_at: string | null
-          credits: number | null
-          degree_id: string | null
-          description: string | null
-          id: string
-          level: string | null
-          metadata: Json | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          credits?: number | null
-          degree_id?: string | null
-          description?: string | null
-          id?: string
-          level?: string | null
-          metadata?: Json | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          credits?: number | null
-          degree_id?: string | null
-          description?: string | null
-          id?: string
-          level?: string | null
-          metadata?: Json | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "courses_degree_id_fkey"
-            columns: ["degree_id"]
-            isOneToOne: false
-            referencedRelation: "degrees"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      curriculum_modules: {
-        Row: {
-          content: Json
-          created_at: string | null
-          curriculum_id: string | null
-          display_order: number | null
-          id: string
-          import_status: string | null
-          import_step: number | null
-          is_draft: boolean | null
-          module_data: Json
-          module_status: string
-          module_type: string
-          parent_id: string | null
-          updated_at: string | null
-          version: number | null
-        }
-        Insert: {
-          content: Json
-          created_at?: string | null
-          curriculum_id?: string | null
-          display_order?: number | null
-          id?: string
-          import_status?: string | null
-          import_step?: number | null
-          is_draft?: boolean | null
-          module_data?: Json
-          module_status?: string
-          module_type: string
-          parent_id?: string | null
-          updated_at?: string | null
-          version?: number | null
-        }
-        Update: {
-          content?: Json
-          created_at?: string | null
-          curriculum_id?: string | null
-          display_order?: number | null
-          id?: string
-          import_status?: string | null
-          import_step?: number | null
-          is_draft?: boolean | null
-          module_data?: Json
-          module_status?: string
-          module_type?: string
-          parent_id?: string | null
-          updated_at?: string | null
-          version?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "curriculum_modules_curriculum_id_fkey"
-            columns: ["curriculum_id"]
-            isOneToOne: false
-            referencedRelation: "imported_curricula"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "curriculum_modules_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "curriculum_modules"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      curriculum_progress: {
-        Row: {
-          active_course_id: string | null
-          active_module_id: string | null
-          created_at: string
-          curriculum_id: string
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          active_course_id?: string | null
-          active_module_id?: string | null
-          created_at?: string
-          curriculum_id: string
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          active_course_id?: string | null
-          active_module_id?: string | null
-          created_at?: string
-          curriculum_id?: string
-          id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "curriculum_progress_curriculum_id_fkey"
-            columns: ["curriculum_id"]
-            isOneToOne: false
-            referencedRelation: "imported_curricula"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      curriculum_templates: {
-        Row: {
-          content: Json
-          created_at: string
-          description: string | null
-          id: string
-          is_default: boolean | null
-          name: string
-          template_type: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          content: Json
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_default?: boolean | null
-          name: string
-          template_type: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          content?: Json
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_default?: boolean | null
-          name?: string
-          template_type?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       curriculum_versions: {
         Row: {
           created_at: string | null
@@ -388,15 +37,7 @@ export type Database = {
           metadata?: Json | null
           version?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "curriculum_versions_curriculum_id_fkey"
-            columns: ["curriculum_id"]
-            isOneToOne: false
-            referencedRelation: "imported_curricula"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       degrees: {
         Row: {
@@ -441,36 +82,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      imported_curricula: {
-        Row: {
-          created_at: string
-          curriculum: Json
-          id: string
-          last_modified_at: string | null
-          metadata: Json | null
-          user_id: string
-          version: number | null
-        }
-        Insert: {
-          created_at?: string
-          curriculum: Json
-          id?: string
-          last_modified_at?: string | null
-          metadata?: Json | null
-          user_id: string
-          version?: number | null
-        }
-        Update: {
-          created_at?: string
-          curriculum?: Json
-          id?: string
-          last_modified_at?: string | null
-          metadata?: Json | null
-          user_id?: string
-          version?: number | null
-        }
-        Relationships: []
       }
       messages: {
         Row: {
@@ -539,15 +150,7 @@ export type Database = {
           updated_at?: string | null
           version?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "module_assignments_module_id_fkey"
-            columns: ["module_id"]
-            isOneToOne: false
-            referencedRelation: "course_modules"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       module_quizzes: {
         Row: {
@@ -583,15 +186,7 @@ export type Database = {
           updated_at?: string | null
           version?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "module_quizzes_module_id_fkey"
-            columns: ["module_id"]
-            isOneToOne: false
-            referencedRelation: "course_modules"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -733,6 +328,42 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_responses: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          curriculum_id: string | null
+          id: string
+          quiz_id: string
+          responses: Json
+          score: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          curriculum_id?: string | null
+          id?: string
+          quiz_id: string
+          responses?: Json
+          score?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          curriculum_id?: string | null
+          id?: string
+          quiz_id?: string
+          responses?: Json
+          score?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           content: string | null
@@ -770,15 +401,7 @@ export type Database = {
           updated_at?: string | null
           url?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "resources_module_id_fkey"
-            columns: ["module_id"]
-            isOneToOne: false
-            referencedRelation: "course_modules"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       school_members: {
         Row: {
@@ -1091,6 +714,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          curriculum_id: string | null
+          id: string
+          progress: Json
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          curriculum_id?: string | null
+          id?: string
+          progress?: Json
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          curriculum_id?: string | null
+          id?: string
+          progress?: Json
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1099,7 +752,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      difficulty_level: "beginner" | "intermediate" | "advanced"
+      question_type:
+        | "multiple-choice"
+        | "coding"
+        | "essay"
+        | "short-answer"
+        | "true-false"
+      resource_type: "video" | "document" | "code" | "article" | "pdf"
+      template_type: "program" | "course" | "module"
     }
     CompositeTypes: {
       [_ in never]: never
