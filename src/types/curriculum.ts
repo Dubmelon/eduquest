@@ -1,5 +1,6 @@
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 export type CourseLevel = 'introductory' | 'intermediate' | 'advanced';
+export type QuestionType = 'multiple-choice' | 'essay' | 'coding';
 
 export interface ModuleMetadata {
   estimatedTime: number;
@@ -17,19 +18,16 @@ export interface Resource {
   duration?: string;
   url?: string;
   embedType?: 'youtube';
-  code?: {
-    initialCode: string;
-    testCases: Array<{
-      input: string;
-      expectedOutput: string;
-    }>;
-  };
 }
 
-export interface LearningObjective {
+export interface Question {
   id: string;
+  type: QuestionType;
+  title: string;
   description: string;
-  assessmentCriteria: string[];
+  points: number;
+  options?: string[];
+  correctAnswer?: number;
 }
 
 export interface Assignment {
@@ -46,21 +44,6 @@ export interface Quiz {
   title: string;
   description: string;
   questions: Question[];
-}
-
-export interface Question {
-  id: string;
-  type: 'multiple-choice' | 'essay' | 'coding';
-  title: string;
-  description: string;
-  points: number;
-  options?: string[];
-  correctAnswer?: number;
-  initialCode?: string;
-  testCases?: Array<{
-    input: string;
-    expectedOutput: string;
-  }>;
 }
 
 export interface Module {
@@ -81,6 +64,12 @@ export interface Module {
     description: string;
     courseId?: string;
   };
+}
+
+export interface LearningObjective {
+  id: string;
+  description: string;
+  assessmentCriteria: string[];
 }
 
 export interface Course {

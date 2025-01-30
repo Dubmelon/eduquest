@@ -1,4 +1,4 @@
-import type { Program, Course, Module, Resource } from '@/types/curriculum';
+import type { Program, Course, Module, Resource, Question } from '@/types/curriculum';
 import programData from '@/data/curriculum/New defaults/program.json';
 import coursesData from '@/data/curriculum/New defaults/courses.json';
 import modulesData from '@/data/curriculum/New defaults/modules.json';
@@ -66,8 +66,27 @@ export class CurriculumLoader {
               url: resource.url,
               embedType: resource.embedType as "youtube" | undefined
             })),
-            assignments: moduleData.assignments || [],
-            quizzes: moduleData.quizzes || [],
+            assignments: (moduleData.assignments || []).map(assignment => ({
+              id: assignment.id,
+              title: assignment.title,
+              description: assignment.description,
+              dueDate: assignment.dueDate,
+              points: assignment.points,
+              questions: assignment.questions?.map(q => ({
+                ...q,
+                type: q.type as 'multiple-choice' | 'essay' | 'coding'
+              })) || []
+            })),
+            quizzes: (moduleData.quizzes || []).map(quiz => ({
+              id: quiz.id,
+              title: quiz.title,
+              description: quiz.description,
+              questions: quiz.questions.map(q => ({
+                ...q,
+                type: q.type as 'multiple-choice' | 'essay' | 'coding',
+                description: q.description || ''
+              }))
+            })),
             content: {
               id: moduleData.id,
               title: moduleData.title,
