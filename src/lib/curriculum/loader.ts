@@ -31,7 +31,9 @@ export class CurriculumLoader {
             return {
               ...module,
               metadata: {
-                ...module.metadata,
+                estimatedTime: module.metadata?.estimatedTime || 0,
+                difficulty: module.metadata?.difficulty || 'beginner',
+                prerequisites: module.metadata?.prerequisites || [],
                 tags: module.metadata?.tags || [],
                 skills: module.metadata?.skills || []
               }
@@ -53,7 +55,9 @@ export class CurriculumLoader {
       const modules = modulesData.map(module => ({
         ...module,
         metadata: {
-          ...module.metadata,
+          estimatedTime: module.metadata?.estimatedTime || 0,
+          difficulty: module.metadata?.difficulty || 'beginner',
+          prerequisites: module.metadata?.prerequisites || [],
           tags: module.metadata?.tags || [],
           skills: module.metadata?.skills || []
         }
