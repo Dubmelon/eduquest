@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Curriculum } from "@/types/curriculum";
+import type { Curriculum, Program } from "@/types/curriculum";
 
 const learningObjectiveSchema = z.object({
   id: z.string(),
@@ -83,21 +83,61 @@ export const curriculumSchema = z.object({
   degrees: z.array(degreeSchema).default([])
 });
 
+export const programSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  programOutcomes: z.array(z.string()),
+  institution: z.string(),
+  complianceStandards: z.array(z.string()),
+  degrees: z.array(degreeSchema)
+});
+
 export const validateAndTransformCurriculum = (data: unknown): Curriculum => {
   console.log("Validating curriculum data:", data);
   
   try {
-    const validationResult = curriculumSchema.safeParse(data);
+    const validationResult = curriculumSchema.parse(data);
+    console.log("Validation successful:", validationResult);
     
-    if (!validationResult.success) {
-      console.error("Validation errors:", validationResult.error.errors);
-      throw new Error("Invalid curriculum format: " + JSON.stringify(validationResult.error.errors, null, 2));
-    }
-
-    console.log("Validation successful:", validationResult.data);
-    return validationResult.data;
+    return {
+      name: validationResult.name,
+      description: validationResult.description,
+      degrees: validationResult.degrees.map(degree => ({
+        ...degree,
+        courses: degree.courses.map(course => ({
+          ...course,
+          modules: course.modules.map(module => ({
+            ...module,
+            metadata: {
+              estimatedTime: module.metadata?.estimatedTime ?? 0,
+              difficulty: module.metadata?.difficulty ?? 'beginner',
+              prerequisites: module.metadata?.prerequisites ?? [],
+              tags: module.metadata?.tags ?? [],
+              skills: module.metadata?.skills ?? []
+            },
+            learningObjectives: module.learningObjectives ?? [],
+            resources: module.resources ?? [],
+            assignments: module.assignments ?? [],
+            quizzes: module.quizzes ?? []
+          }))
+        }))
+      }))
+    };
   } catch (error) {
     console.error("Validation error:", error);
+    throw error;
+  }
+};
+
+export const validateAndTransformProgram = (data: unknown): Program => {
+  console.log("Validating program data:", data);
+  
+  try {
+    const validationResult = programSchema.parse(data);
+    console.log("Program validation successful:", validationResult);
+    return validationResult;
+  } catch (error) {
+    console.error("Program validation error:", error);
     throw error;
   }
 };

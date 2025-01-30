@@ -165,3 +165,22 @@ export interface Curriculum {
   description: string;
   degrees: Degree[];
 }
+
+export interface Program {
+  name: string;
+  description: string;
+  programOutcomes: string[];
+  institution: string;
+  complianceStandards: string[];
+  degrees: Degree[];
+}
+
+export interface CourseCard {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  duration: string;
+  level: CourseLevel;
+  modules: Module[];
+}
