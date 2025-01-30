@@ -5,6 +5,38 @@ import modulesData from '@/data/curriculum/New defaults/modules.json';
 import { AppError } from '@/lib/errorHandling';
 import { DifficultyLevel } from '@/types/learning-types';
 
+interface ModuleMetadata {
+  estimatedTime: number;
+  difficulty: DifficultyLevel;
+  prerequisites: string[];
+  tags?: string[];
+  skills?: string[];
+}
+
+interface ResourceData {
+  id: string;
+  title: string;
+  type: string;
+  content: string;
+  duration?: string;
+  url?: string;
+  embedType?: 'youtube';
+  code?: {
+    initialCode: string;
+    testCases: Array<{ input: string; expectedOutput: string }>;
+  };
+}
+
+interface QuestionData {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  points: number;
+  initialCode?: string;
+  testCases?: Array<{ input: string; expectedOutput: string }>;
+}
+
 export class CurriculumLoader {
   static async loadProgram(): Promise<Program> {
     try {
@@ -57,7 +89,7 @@ export class CurriculumLoader {
               skills: moduleData.metadata?.skills || []
             },
             learningObjectives: moduleData.learningObjectives || [],
-            resources: (moduleData.resources || []).map(resource => ({
+            resources: (moduleData.resources || []).map((resource: ResourceData) => ({
               id: resource.id,
               title: resource.title,
               type: resource.type,
@@ -76,7 +108,7 @@ export class CurriculumLoader {
               description: assignment.description,
               dueDate: assignment.dueDate,
               points: assignment.points,
-              questions: assignment.questions?.map(q => ({
+              questions: assignment.questions?.map((q: QuestionData) => ({
                 ...q,
                 type: q.type as 'multiple-choice' | 'essay' | 'coding',
                 initialCode: q.initialCode || '',

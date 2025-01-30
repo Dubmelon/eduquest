@@ -77,4 +77,5 @@ export const CurriculumImport: React.FC = () => {
   );
 };
 
+// Add both named and default export
 export default CurriculumImport;
