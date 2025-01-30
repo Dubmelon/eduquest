@@ -30,16 +30,16 @@ export const CurriculumView = ({ programId }: CurriculumViewProps) => {
 
   if (!program) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-4 sm:p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{program.name}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
+      <h1 className="text-2xl sm:text-3xl font-bold">{program.name}</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {program.degrees[0].courses.map((course, index) => {
           if (!course) {
             console.warn("Missing course data at index:", index);
