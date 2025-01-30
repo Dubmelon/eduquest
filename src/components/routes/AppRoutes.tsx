@@ -27,10 +27,8 @@ export const AppRoutes = () => {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Dashboard />
-            </>
+            <Navigation />
+            <Dashboard />
           </ProtectedRoute>
         }
       />
@@ -39,10 +37,8 @@ export const AppRoutes = () => {
         path="/import"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Import />
-            </>
+            <Navigation />
+            <Import />
           </ProtectedRoute>
         }
       />
@@ -51,10 +47,8 @@ export const AppRoutes = () => {
         path="/learning/:id"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Learning />
-            </>
+            <Navigation />
+            <Learning />
           </ProtectedRoute>
         }
       />
@@ -63,10 +57,8 @@ export const AppRoutes = () => {
         path="/creator"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Creator />
-            </>
+            <Navigation />
+            <Creator />
           </ProtectedRoute>
         }
       />
@@ -75,10 +67,8 @@ export const AppRoutes = () => {
         path="/profile"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Profile />
-            </>
+            <Navigation />
+            <Profile />
           </ProtectedRoute>
         }
       />
@@ -87,10 +77,8 @@ export const AppRoutes = () => {
         path="/settings"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation />
-              <Settings />
-            </>
+            <Navigation />
+            <Settings />
           </ProtectedRoute>
         }
       />

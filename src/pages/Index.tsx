@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Hero } from "@/components/Hero";
+import { Hero } from "@/components/home/Hero";
 import { FeaturedCourses } from "@/components/home/FeaturedCourses";
 
 const Index = () => {
