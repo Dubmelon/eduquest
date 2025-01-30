@@ -81,7 +81,11 @@ export const curriculumSchema = z.object({
   name: z.string(),
   description: z.string().default('No description provided'),
   degrees: z.array(degreeSchema).default([])
-});
+}).transform((data): Curriculum => ({
+  name: data.name,
+  description: data.description,
+  degrees: data.degrees
+}));
 
 export const programSchema = z.object({
   name: z.string(),
@@ -90,7 +94,14 @@ export const programSchema = z.object({
   institution: z.string(),
   complianceStandards: z.array(z.string()),
   degrees: z.array(degreeSchema)
-});
+}).transform((data): Program => ({
+  name: data.name,
+  description: data.description,
+  programOutcomes: data.programOutcomes,
+  institution: data.institution,
+  complianceStandards: data.complianceStandards,
+  degrees: data.degrees
+}));
 
 export const validateAndTransformCurriculum = (data: unknown): Curriculum => {
   console.log("Validating curriculum data:", data);

@@ -23,9 +23,10 @@ export class CurriculumLoader {
       console.log("Loading courses data...");
       const courses = coursesData.map(course => ({
         ...course,
+        level: course.level as Course['level'],
         modules: course.modules
           .map(moduleId => modulesData.find(m => m.id === moduleId))
-          .filter(Boolean) as Module[]
+          .filter((module): module is Module => module !== undefined)
       }));
       console.log("Courses loaded successfully:", courses);
       return courses;

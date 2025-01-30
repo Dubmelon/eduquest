@@ -33,8 +33,6 @@ export class CurriculumManager {
     const course = this.coursesMap.get(courseId);
     if (!course) return [];
     
-    return course.modules
-      .map(id => this.modulesMap.get(id))
-      .filter((module): module is Module => module !== undefined);
+    return course.modules;
   }
 }
