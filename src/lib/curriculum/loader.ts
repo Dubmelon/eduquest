@@ -39,20 +39,26 @@ export class CurriculumLoader {
         credits: course.credits,
         level: course.level as Course['level'],
         modules: course.modules.map(moduleId => {
-          const module = modulesData.find(m => m.id === moduleId);
-          if (!module) return null;
+          const moduleData = modulesData.find(m => m.id === moduleId);
+          if (!moduleData) return null;
           return {
-            id: module.id,
-            title: module.title,
-            description: module.description || '',
+            id: moduleData.id,
+            title: moduleData.title,
+            description: moduleData.description || '',
             credits: 0,
-            type: module.type as 'resource' | 'assignment' | 'quiz',
             metadata: {
-              estimatedTime: module.metadata?.estimatedTime || 0,
-              difficulty: module.metadata?.difficulty || 'beginner',
-              prerequisites: module.metadata?.prerequisites || [],
-              tags: module.metadata?.tags || [],
-              skills: module.metadata?.skills || []
+              estimatedTime: moduleData.metadata?.estimatedTime || 0,
+              difficulty: moduleData.metadata?.difficulty || 'beginner',
+              prerequisites: moduleData.metadata?.prerequisites || [],
+              tags: moduleData.metadata?.tags || [],
+              skills: moduleData.metadata?.skills || []
+            },
+            content: {
+              id: moduleData.id,
+              title: moduleData.title,
+              type: moduleData.type as 'resource' | 'assignment' | 'quiz',
+              description: moduleData.description || '',
+              courseId: course.id
             },
             learningObjectives: [],
             resources: [],
@@ -70,18 +76,23 @@ export class CurriculumLoader {
   static async loadModules(): Promise<Module[]> {
     try {
       console.log("Loading modules data...");
-      return modulesData.map(module => ({
-        id: module.id,
-        title: module.title,
-        description: module.description || '',
+      return modulesData.map(moduleData => ({
+        id: moduleData.id,
+        title: moduleData.title,
+        description: moduleData.description || '',
         credits: 0,
-        type: module.type as 'resource' | 'assignment' | 'quiz',
         metadata: {
-          estimatedTime: module.metadata?.estimatedTime || 0,
-          difficulty: module.metadata?.difficulty || 'beginner',
-          prerequisites: module.metadata?.prerequisites || [],
-          tags: module.metadata?.tags || [],
-          skills: module.metadata?.skills || []
+          estimatedTime: moduleData.metadata?.estimatedTime || 0,
+          difficulty: moduleData.metadata?.difficulty || 'beginner',
+          prerequisites: moduleData.metadata?.prerequisites || [],
+          tags: moduleData.metadata?.tags || [],
+          skills: moduleData.metadata?.skills || []
+        },
+        content: {
+          id: moduleData.id,
+          title: moduleData.title,
+          type: moduleData.type as 'resource' | 'assignment' | 'quiz',
+          description: moduleData.description || ''
         },
         learningObjectives: [],
         resources: [],

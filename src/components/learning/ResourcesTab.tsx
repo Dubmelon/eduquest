@@ -18,7 +18,6 @@ export const ResourcesTab = ({
         <ResourceViewer
           key={resource.id}
           resource={resource}
-          isCompleted={completedResources.includes(resource.id)}
           onComplete={() => onResourceComplete(resource.id)}
         />
       ))}

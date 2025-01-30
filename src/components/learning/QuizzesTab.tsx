@@ -14,11 +14,10 @@ export const QuizzesTab = ({
 }: QuizzesTabProps) => {
   return (
     <div className="space-y-6">
-      {module.quizzes?.map((quiz, index) => (
+      {module.quizzes?.map((quiz) => (
         <QuizPlayer
           key={quiz.id}
           quiz={quiz}
-          isCompleted={completedQuizzes.includes(index)}
           onComplete={onQuizComplete}
         />
       ))}

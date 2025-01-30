@@ -1,3 +1,5 @@
+import type { DifficultyLevel } from './curriculum';
+
 export interface ModuleContent {
   id: string;
   title: string;
@@ -11,24 +13,16 @@ export interface ModuleListProps {
   onModuleSelect: (module: ModuleContent) => void;
 }
 
-export interface QuizPlayerProps {
-  quiz: Quiz;
-  isCompleted?: boolean;
-  onComplete: (score: number) => void;
-}
-
-export interface ResourceViewerProps {
-  resource: Resource;
-  isCompleted?: boolean;
-  onComplete: () => void;
-}
-
 export interface Module {
+  id: string;
+  title: string;
+  description: string;
+  credits: number;
+  type?: 'resource' | 'assignment' | 'quiz';
   content: ModuleContent;
-  credits?: number;
   metadata: {
     estimatedTime: number;
-    difficulty: 'beginner' | 'intermediate' | 'advanced';
+    difficulty: DifficultyLevel;
     prerequisites: string[];
     tags: string[];
     skills: string[];
@@ -67,4 +61,14 @@ export interface Question {
   points: number;
   options?: string[];
   correctAnswer?: number | boolean;
+}
+
+export interface QuizPlayerProps {
+  quiz: Quiz;
+  onComplete: (score: number) => void;
+}
+
+export interface ResourceViewerProps {
+  resource: Resource;
+  onComplete: () => void;
 }

@@ -112,7 +112,15 @@ const programSchema = z.object({
 
 export const validateAndTransformProgram = (data: unknown): Program => {
   try {
-    return programSchema.parse(data);
+    const validatedData = programSchema.parse(data);
+    return {
+      name: validatedData.name,
+      description: validatedData.description,
+      programOutcomes: validatedData.programOutcomes,
+      institution: validatedData.institution,
+      complianceStandards: validatedData.complianceStandards,
+      degrees: validatedData.degrees
+    };
   } catch (error) {
     console.error("Program validation error:", error);
     throw error;
