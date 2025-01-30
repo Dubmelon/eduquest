@@ -10,6 +10,14 @@ export interface ModuleMetadata {
   skills: string[];
 }
 
+export interface CodeExample {
+  initialCode: string;
+  testCases: Array<{
+    input: string;
+    expectedOutput: string;
+  }>;
+}
+
 export interface Resource {
   id: string;
   title: string;
@@ -18,13 +26,7 @@ export interface Resource {
   duration?: string;
   url?: string;
   embedType?: 'youtube';
-  code?: {
-    initialCode: string;
-    testCases: Array<{
-      input: string;
-      expectedOutput: string;
-    }>;
-  };
+  code?: CodeExample;
 }
 
 export interface Question {
