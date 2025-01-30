@@ -3,7 +3,7 @@ export interface ModuleContent {
   title: string;
   type: 'resource' | 'assignment' | 'quiz';
   description: string;
-  courseId: string;
+  courseId?: string;
 }
 
 export interface ModuleMetadata {
@@ -53,8 +53,10 @@ export interface Module {
   id: string;
   title: string;
   description: string;
+  type?: 'resource' | 'assignment' | 'quiz';
+  credits: number;
   metadata: ModuleMetadata;
-  content: ModuleContent;
+  content?: ModuleContent;
   learningObjectives: LearningObjective[];
   resources: Resource[];
   assessments: Assessment[];

@@ -11,10 +11,11 @@ export class CurriculumManager {
     try {
       this.program = await CurriculumLoader.loadProgram();
       const courses = await CurriculumLoader.loadCourses();
-      const modules = await CurriculumLoader.loadModules();
       
       this.coursesMap = new Map(courses.map(c => [c.id, c]));
-      this.modulesMap = new Map(modules.map(m => [m.id, m]));
+      this.modulesMap = new Map(
+        courses.flatMap(c => c.modules.map(m => [m.id, m]))
+      );
     } catch (error) {
       console.error('Failed to initialize curriculum manager:', error);
       throw new AppError('Failed to initialize curriculum', 'CURRICULUM_INIT_ERROR');

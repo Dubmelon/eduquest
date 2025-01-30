@@ -46,7 +46,7 @@ export class CurriculumLoader {
             id: moduleData.id,
             title: moduleData.title,
             description: moduleData.description || '',
-            type: moduleData.type || 'resource',
+            credits: moduleData.credits || 0,
             metadata: {
               estimatedTime: moduleData.metadata?.estimatedTime || 0,
               difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
@@ -54,17 +54,18 @@ export class CurriculumLoader {
               tags: moduleData.metadata?.tags || [],
               skills: moduleData.metadata?.skills || []
             },
+            learningObjectives: moduleData.learningObjectives || [],
+            resources: moduleData.resources || [],
+            assessments: [],
+            milestones: [],
+            type: moduleData.type || 'resource',
             content: {
               id: moduleData.id,
               title: moduleData.title,
               type: moduleData.type || 'resource',
               description: moduleData.description || '',
               courseId: course.id
-            },
-            learningObjectives: [],
-            resources: [],
-            assessments: [],
-            milestones: []
+            }
           } as Module;
         }).filter((module): module is Module => module !== null)
       }));
