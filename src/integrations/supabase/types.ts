@@ -9,6 +9,89 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          grade: number | null
+          id: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          grade?: number | null
+          id?: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          grade?: number | null
+          id?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_progress: {
+        Row: {
+          completed_modules: number | null
+          created_at: string | null
+          current_grade: number | null
+          id: string
+          rank: number | null
+          total_modules: number | null
+          total_students: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_modules?: number | null
+          created_at?: string | null
+          current_grade?: number | null
+          id?: string
+          rank?: number | null
+          total_modules?: number | null
+          total_students?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_modules?: number | null
+          created_at?: string | null
+          current_grade?: number | null
+          id?: string
+          rank?: number | null
+          total_modules?: number | null
+          total_students?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           created_at: string | null

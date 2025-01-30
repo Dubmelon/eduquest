@@ -49,14 +49,14 @@ const moduleSchema = z.object({
   metadata: z.object({
     estimatedTime: z.number(),
     difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
-    prerequisites: z.array(z.string()),
-    tags: z.array(z.string()),
-    skills: z.array(z.string())
-  }),
-  learningObjectives: z.array(learningObjectiveSchema),
-  resources: z.array(resourceSchema),
-  assignments: z.array(assignmentSchema),
-  quizzes: z.array(quizSchema)
+    prerequisites: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    skills: z.array(z.string()).default([])
+  }).default({}),
+  learningObjectives: z.array(learningObjectiveSchema).default([]),
+  resources: z.array(resourceSchema).default([]),
+  assignments: z.array(assignmentSchema).default([]),
+  quizzes: z.array(quizSchema).default([])
 });
 
 const courseSchema = z.object({
@@ -65,7 +65,7 @@ const courseSchema = z.object({
   description: z.string(),
   credits: z.number(),
   level: z.enum(['introductory', 'intermediate', 'advanced']),
-  modules: z.array(moduleSchema)
+  modules: z.array(moduleSchema).default([])
 });
 
 const degreeSchema = z.object({
@@ -74,21 +74,30 @@ const degreeSchema = z.object({
   type: z.string(),
   description: z.string(),
   requiredCredits: z.number(),
-  courses: z.array(courseSchema)
+  courses: z.array(courseSchema).default([])
 });
 
 export const curriculumSchema = z.object({
   name: z.string(),
   description: z.string(),
-  degrees: z.array(degreeSchema)
+  degrees: z.array(degreeSchema).default([])
 });
 
 export const validateAndTransformCurriculum = (data: unknown): Curriculum => {
-  const validationResult = curriculumSchema.safeParse(data);
+  console.log("Validating curriculum data:", data);
   
-  if (!validationResult.success) {
-    throw new Error("Invalid curriculum format: " + JSON.stringify(validationResult.error.errors, null, 2));
-  }
+  try {
+    const validationResult = curriculumSchema.safeParse(data);
+    
+    if (!validationResult.success) {
+      console.error("Validation errors:", validationResult.error.errors);
+      throw new Error("Invalid curriculum format: " + JSON.stringify(validationResult.error.errors, null, 2));
+    }
 
-  return validationResult.data;
+    console.log("Validation successful:", validationResult.data);
+    return validationResult.data;
+  } catch (error) {
+    console.error("Validation error:", error);
+    throw error;
+  }
 };

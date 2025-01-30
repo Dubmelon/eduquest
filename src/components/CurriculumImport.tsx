@@ -17,8 +17,13 @@ export const CurriculumImport = () => {
   const handleImportDefault = async () => {
     setIsLoading(true);
     try {
+      console.log("Starting default curriculum import...");
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) {
+        console.error("No authenticated user found");
+        throw new Error("User not authenticated");
+      }
 
       const template = {
         user_id: user.id,
@@ -44,11 +49,20 @@ export const CurriculumImport = () => {
         is_default: true,
       };
 
-      const { error } = await supabase
-        .from('curriculum_templates')
-        .insert(template);
+      console.log("Inserting template into curriculum_templates:", template);
 
-      if (error) throw error;
+      const { error, data } = await supabase
+        .from('curriculum_templates')
+        .insert(template)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
+
+      console.log("Successfully imported default curriculum:", data);
 
       toast({
         title: "Success",
@@ -58,7 +72,7 @@ export const CurriculumImport = () => {
       console.error('Import error:', error);
       toast({
         title: "Error",
-        description: "Failed to import curriculum template",
+        description: error instanceof Error ? error.message : "Failed to import curriculum",
         variant: "destructive",
       });
     } finally {
@@ -68,6 +82,7 @@ export const CurriculumImport = () => {
 
   const handleFileUpload = async (file: File) => {
     if (file.type !== 'application/json') {
+      console.error('Invalid file type:', file.type);
       toast({
         title: "Invalid file type",
         description: "Please upload a JSON file",
@@ -78,12 +93,21 @@ export const CurriculumImport = () => {
 
     setIsLoading(true);
     try {
+      console.log("Starting file upload process...");
+      
       const text = await file.text();
+      console.log("Parsing JSON data...");
       const jsonData = JSON.parse(text);
+      
+      console.log("Validating curriculum data...");
       const validatedData = validateAndTransformCurriculum(jsonData);
+      console.log("Validated curriculum data:", validatedData);
 
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) {
+        console.error("No authenticated user found");
+        throw new Error("User not authenticated");
+      }
 
       const template = {
         user_id: user.id,
@@ -94,11 +118,20 @@ export const CurriculumImport = () => {
         is_default: false,
       };
 
-      const { error } = await supabase
-        .from('curriculum_templates')
-        .insert(template);
+      console.log("Inserting curriculum into database:", template);
 
-      if (error) throw error;
+      const { error, data } = await supabase
+        .from('curriculum_templates')
+        .insert(template)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
+
+      console.log("Successfully imported curriculum:", data);
 
       toast({
         title: "Success",
