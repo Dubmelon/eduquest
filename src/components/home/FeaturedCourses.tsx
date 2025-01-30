@@ -1,49 +1,93 @@
-import React from 'react';
-import { CourseCard } from './CourseCard';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+
+interface Course {
+  id: string;
+  title: string;
+  description: string | null;
+  level: string | null;
+  metadata: {
+    duration?: string;
+  } | null;
+  created_at: string;
+}
 
 export const FeaturedCourses = () => {
-  const { data: courses = [], isLoading } = useQuery({
+  const { toast } = useToast();
+  
+  const { data: courses, isLoading, error } = useQuery({
     queryKey: ['featured-courses'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
         .select('*')
-        .limit(6);
-      
+        .limit(3)
+        .order('created_at', { ascending: false });
+
       if (error) throw error;
-      return data;
-    }
+      return data as Course[];
+    },
   });
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-64 bg-muted animate-pulse rounded-lg"></div>
-        ))}
-      </div>
-    );
+  if (error) {
+    toast({
+      title: "Error loading courses",
+      description: "Please try again later",
+      variant: "destructive",
+    });
   }
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-3xl font-bold tracking-tight">Featured Courses</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            course={{
-              ...course,
-              category: 'Featured',
-              duration: `${course.credits} credits`
-            }}
-            index={0}
-            modules={[]}
-          />
-        ))}
+    <section id="featured-courses" className="space-y-8">
+      <div className="text-center mb-16">
+        <h2 className="font-display text-4xl font-bold mb-4">Featured Courses</h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Explore our most popular courses designed to help you advance your career
+        </p>
       </div>
-    </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {isLoading ? (
+          [...Array(3)].map((_, index) => (
+            <div key={index} className="glass-panel rounded-2xl p-6">
+              <Skeleton className="h-6 w-24 mb-4" />
+              <Skeleton className="h-8 w-full mb-2" />
+              <Skeleton className="h-20 w-full mb-4" />
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+          ))
+        ) : (
+          courses?.map((course, index) => (
+            <motion.div
+              key={course.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="glass-panel rounded-2xl p-6 hover-scale"
+            >
+              <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-primary/10 text-primary mb-4">
+                {course.level || 'All Levels'}
+              </span>
+              <h3 className="text-xl font-bold mb-2">{course.title}</h3>
+              <p className="text-muted-foreground mb-4">{course.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  {course.metadata?.duration || 'Self-paced'}
+                </span>
+                <button className="text-primary font-medium hover:underline">
+                  Learn more
+                </button>
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
+    </section>
   );
 };

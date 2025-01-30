@@ -1,13 +1,8 @@
 import { motion } from "framer-motion";
 import { HeroButton } from "./HeroButton";
 import { useNavigate } from "react-router-dom";
-import type { HeroProps } from "@/types/home";
 
-export const Hero = ({ 
-  title = "Transform Your Learning Journey",
-  subtitle = "Welcome to EduQuest",
-  description = "Discover a new way of learning with our interactive platform designed to help you achieve your educational goals."
-}: HeroProps) => {
+export const Hero = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
@@ -15,14 +10,14 @@ export const Hero = ({
   };
 
   const handleLearnMore = () => {
-    const featuredSection = document.getElementById("featured-courses");
+    const featuredSection = document.querySelector("#featured-courses");
     if (featuredSection) {
       featuredSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
-    <section className="min-h-[80vh] flex items-center justify-center relative overflow-hidden">
+    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
       <div className="container px-4 mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -31,13 +26,13 @@ export const Hero = ({
           className="text-center max-w-3xl mx-auto"
         >
           <span className="inline-block px-4 py-1.5 mb-6 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            {subtitle}
+            Welcome to EduQuest
           </span>
-          <h1 className="font-display text-5xl md:text-6xl font-bold mb-6 text-balance">
-            {title}
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
+            Transform Your Learning Journey
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 text-balance">
-            {description}
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 text-balance max-w-2xl mx-auto">
+            Discover a new way of learning with our interactive platform designed to help you achieve your educational goals.
           </p>
           <motion.div
             initial={{ opacity: 0 }}
