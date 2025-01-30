@@ -31,8 +31,15 @@ export const AppearanceSettings = () => {
             Dark
           </Button>
           <Button
+            variant={theme === "rainbow" ? "default" : "outline"}
+            className="h-24 rainbow-gradient text-white"
+            onClick={() => setTheme("rainbow")}
+          >
+            Rainbow
+          </Button>
+          <Button
             variant={theme === "system" ? "default" : "outline"}
-            className="h-24 col-span-1 md:col-span-2"
+            className="h-24"
             onClick={() => setTheme("system")}
           >
             System
