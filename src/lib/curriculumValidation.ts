@@ -4,7 +4,7 @@ import type { Curriculum, Program } from "@/types/curriculum";
 const learningObjectiveSchema = z.object({
   id: z.string(),
   description: z.string(),
-  assessmentCriteria: z.array(z.string())
+  assessmentCriteria: z.array(z.string()).default([])
 });
 
 const resourceSchema = z.object({
@@ -21,34 +21,34 @@ const questionSchema = z.object({
   id: z.string(),
   type: z.enum(['multiple-choice', 'essay', 'coding', 'true-false', 'short-answer', 'matching']),
   title: z.string(),
-  description: z.string(),
-  points: z.number()
+  description: z.string().default(''),
+  points: z.number().default(0)
 });
 
 const assignmentSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  dueDate: z.string(),
-  points: z.number(),
-  questions: z.array(questionSchema).optional()
+  description: z.string().default('No description provided'),
+  dueDate: z.string().default('TBD'),
+  points: z.number().default(0),
+  questions: z.array(questionSchema).optional().default([])
 });
 
 const quizSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  questions: z.array(questionSchema)
+  description: z.string().default('No description provided'),
+  questions: z.array(questionSchema).default([])
 });
 
 const moduleSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  credits: z.number(),
+  description: z.string().default('No description provided'),
+  credits: z.number().default(1),
   metadata: z.object({
-    estimatedTime: z.number(),
-    difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+    estimatedTime: z.number().default(0),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']).default('beginner'),
     prerequisites: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     skills: z.array(z.string()).default([])
@@ -62,9 +62,9 @@ const moduleSchema = z.object({
 const courseSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  credits: z.number(),
-  level: z.enum(['introductory', 'intermediate', 'advanced']),
+  description: z.string().default('No description provided'),
+  credits: z.number().default(3),
+  level: z.enum(['introductory', 'intermediate', 'advanced']).default('introductory'),
   modules: z.array(moduleSchema).default([])
 });
 
@@ -72,14 +72,14 @@ const degreeSchema = z.object({
   id: z.string(),
   title: z.string(),
   type: z.string(),
-  description: z.string(),
-  requiredCredits: z.number(),
+  description: z.string().default('No description provided'),
+  requiredCredits: z.number().default(0),
   courses: z.array(courseSchema).default([])
 });
 
 export const curriculumSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().default('No description provided'),
   degrees: z.array(degreeSchema).default([])
 });
 
@@ -98,31 +98,7 @@ export const validateAndTransformCurriculum = (data: unknown): Curriculum => {
   try {
     const validationResult = curriculumSchema.parse(data);
     console.log("Validation successful:", validationResult);
-    
-    return {
-      name: validationResult.name,
-      description: validationResult.description,
-      degrees: validationResult.degrees.map(degree => ({
-        ...degree,
-        courses: degree.courses.map(course => ({
-          ...course,
-          modules: course.modules.map(module => ({
-            ...module,
-            metadata: {
-              estimatedTime: module.metadata?.estimatedTime ?? 0,
-              difficulty: module.metadata?.difficulty ?? 'beginner',
-              prerequisites: module.metadata?.prerequisites ?? [],
-              tags: module.metadata?.tags ?? [],
-              skills: module.metadata?.skills ?? []
-            },
-            learningObjectives: module.learningObjectives ?? [],
-            resources: module.resources ?? [],
-            assignments: module.assignments ?? [],
-            quizzes: module.quizzes ?? []
-          }))
-        }))
-      }))
-    };
+    return validationResult;
   } catch (error) {
     console.error("Validation error:", error);
     throw error;
