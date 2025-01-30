@@ -1,68 +1,24 @@
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { validateAndTransformCurriculum } from "@/lib/curriculumValidation";
 import { defaultProgram } from "@/data/program";
-import { defaultCourses } from "@/data/curriculum/New defaults/courses";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { FileUp, Upload } from "lucide-react";
+import { FileUploadZone } from "@/components/curriculum/FileUploadZone";
+import { DefaultImportButton } from "@/components/curriculum/DefaultImportButton";
+import { importCurriculumFromFile, importDefaultCurriculum } from "@/lib/curriculum/importHelpers";
 
 const CurriculumImport: React.FC = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
 
   const handleImportDefault = async () => {
     setIsLoading(true);
     try {
-      console.log("Starting default curriculum import...");
-      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.error("No authenticated user found");
         throw new Error("User not authenticated");
       }
 
-      const template = {
-        user_id: user.id,
-        name: defaultProgram.name,
-        description: defaultProgram.description,
-        template_type: 'program',
-        content: {
-          name: defaultProgram.name,
-          description: defaultProgram.description,
-          programOutcomes: defaultProgram.programOutcomes,
-          institution: defaultProgram.institution,
-          complianceStandards: defaultProgram.complianceStandards,
-          degrees: defaultProgram.degrees.map(degree => ({
-            id: degree.id,
-            title: degree.title,
-            type: degree.type,
-            description: degree.description,
-            requiredCredits: degree.requiredCredits,
-            metadata: degree.metadata,
-            courses: degree.courses
-          }))
-        },
-        is_default: true,
-      };
-
-      console.log("Inserting template into curriculum_templates:", template);
-
-      const { error, data } = await supabase
-        .from('curriculum_templates')
-        .insert(template)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Supabase insert error:', error);
-        throw error;
-      }
-
-      console.log("Successfully imported default curriculum:", data);
+      await importDefaultCurriculum(user.id, defaultProgram);
 
       toast({
         title: "Success",
@@ -81,57 +37,14 @@ const CurriculumImport: React.FC = () => {
   };
 
   const handleFileUpload = async (file: File) => {
-    if (file.type !== 'application/json') {
-      console.error('Invalid file type:', file.type);
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a JSON file",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
     try {
-      console.log("Starting file upload process...");
-      
-      const text = await file.text();
-      console.log("Parsing JSON data...");
-      const jsonData = JSON.parse(text);
-      
-      console.log("Validating curriculum data...");
-      const validatedData = validateAndTransformCurriculum(jsonData);
-      console.log("Validated curriculum data:", validatedData);
-
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.error("No authenticated user found");
         throw new Error("User not authenticated");
       }
 
-      const template = {
-        user_id: user.id,
-        name: validatedData.name,
-        description: validatedData.description,
-        template_type: 'program',
-        content: validatedData,
-        is_default: false,
-      };
-
-      console.log("Inserting curriculum into database:", template);
-
-      const { error, data } = await supabase
-        .from('curriculum_templates')
-        .insert(template)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Supabase insert error:', error);
-        throw error;
-      }
-
-      console.log("Successfully imported curriculum:", data);
+      await importCurriculumFromFile(file, user.id);
 
       toast({
         title: "Success",
@@ -149,57 +62,9 @@ const CurriculumImport: React.FC = () => {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
-  };
-
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      await handleFileUpload(file);
-    }
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await handleFileUpload(file);
-    }
-  };
-
   return (
     <div className="space-y-6">
-      <Card
-        className={`p-8 border-2 border-dashed transition-colors ${
-          dragOver ? "border-primary bg-primary/5" : "border-border"
-        }`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <FileUp className="w-12 h-12 text-muted-foreground" />
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              Drag and drop your curriculum JSON file here, or click to select
-            </p>
-            <Input
-              type="file"
-              accept=".json"
-              onChange={handleFileChange}
-              className="mt-4"
-              disabled={isLoading}
-            />
-          </div>
-        </div>
-      </Card>
+      <FileUploadZone onFileUpload={handleFileUpload} isLoading={isLoading} />
 
       <div className="flex items-center">
         <div className="flex-grow border-t border-border" />
@@ -207,15 +72,7 @@ const CurriculumImport: React.FC = () => {
         <div className="flex-grow border-t border-border" />
       </div>
 
-      <Button
-        onClick={handleImportDefault}
-        disabled={isLoading}
-        className="w-full"
-        variant="outline"
-      >
-        <Upload className="w-4 h-4 mr-2" />
-        {isLoading ? "Importing..." : "Import Default Curriculum"}
-      </Button>
+      <DefaultImportButton onImport={handleImportDefault} isLoading={isLoading} />
     </div>
   );
 };
