@@ -79,8 +79,8 @@ const moduleSchema = z.object({
     title: z.string(),
     type: z.enum(['resource', 'assignment', 'quiz']),
     description: z.string(),
-    courseId: z.string().optional()
-  }).optional()
+    courseId: z.string()
+  })
 });
 
 const courseSchema = z.object({
@@ -113,14 +113,7 @@ const programSchema = z.object({
 export const validateAndTransformProgram = (data: unknown): Program => {
   try {
     const validatedData = programSchema.parse(data);
-    return {
-      name: validatedData.name,
-      description: validatedData.description,
-      programOutcomes: validatedData.programOutcomes,
-      institution: validatedData.institution,
-      complianceStandards: validatedData.complianceStandards,
-      degrees: validatedData.degrees
-    };
+    return validatedData;
   } catch (error) {
     console.error("Program validation error:", error);
     throw error;

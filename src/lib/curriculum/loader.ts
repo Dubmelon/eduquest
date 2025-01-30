@@ -46,6 +46,7 @@ export class CurriculumLoader {
             title: moduleData.title,
             description: moduleData.description || '',
             credits: 0,
+            type: moduleData.type as 'resource' | 'assignment' | 'quiz',
             metadata: {
               estimatedTime: moduleData.metadata?.estimatedTime || 0,
               difficulty: moduleData.metadata?.difficulty || 'beginner',
@@ -64,7 +65,7 @@ export class CurriculumLoader {
             resources: [],
             assignments: [],
             quizzes: []
-          };
+          } as Module;
         }).filter((module): module is Module => module !== null)
       }));
     } catch (error) {
@@ -81,6 +82,7 @@ export class CurriculumLoader {
         title: moduleData.title,
         description: moduleData.description || '',
         credits: 0,
+        type: moduleData.type as 'resource' | 'assignment' | 'quiz',
         metadata: {
           estimatedTime: moduleData.metadata?.estimatedTime || 0,
           difficulty: moduleData.metadata?.difficulty || 'beginner',
@@ -92,7 +94,8 @@ export class CurriculumLoader {
           id: moduleData.id,
           title: moduleData.title,
           type: moduleData.type as 'resource' | 'assignment' | 'quiz',
-          description: moduleData.description || ''
+          description: moduleData.description || '',
+          courseId: '' // This will be set when the module is associated with a course
         },
         learningObjectives: [],
         resources: [],

@@ -5,7 +5,7 @@ export interface ModuleContent {
   title: string;
   type: 'resource' | 'assignment' | 'quiz';
   description: string;
-  courseId?: string;
+  courseId: string;
 }
 
 export interface ModuleListProps {
