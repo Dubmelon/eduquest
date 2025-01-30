@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronRight, ChevronDown, BookOpen, FileText, CheckCircle } from "lucide-react";
 import { useCurriculumQueries } from "@/hooks/useCurriculumQueries";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ModuleCard } from "@/components/learning/ModuleCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
@@ -33,17 +34,21 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
 
   if (modulesError) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        <p>Error loading modules: {modulesError.message}</p>
-      </div>
+      <Alert variant="destructive">
+        <AlertDescription>
+          Error loading modules: {modulesError.message}
+        </AlertDescription>
+      </Alert>
     );
   }
 
   if (!modules?.length) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        <p>No modules available for this curriculum</p>
-      </div>
+      <Alert>
+        <AlertDescription>
+          No modules available for this curriculum
+        </AlertDescription>
+      </Alert>
     );
   }
 
@@ -64,19 +69,6 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
     acc[courseId].push(module);
     return acc;
   }, {} as Record<string, typeof modules>);
-
-  const getModuleTypeIcon = (type?: string) => {
-    switch (type) {
-      case 'resource':
-        return <BookOpen className="w-4 h-4" />;
-      case 'assignment':
-        return <FileText className="w-4 h-4" />;
-      case 'quiz':
-        return <CheckCircle className="w-4 h-4" />;
-      default:
-        return <BookOpen className="w-4 h-4" />;
-    }
-  };
 
   return (
     <ScrollArea className="h-[calc(100vh-12rem)]">
@@ -107,7 +99,9 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
                   className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg cursor-pointer"
                   onClick={() => onModuleSelect(module.content)}
                 >
-                  {getModuleTypeIcon(module.content.type)}
+                  {module.content.type === 'resource' && <BookOpen className="w-4 h-4" />}
+                  {module.content.type === 'assignment' && <FileText className="w-4 h-4" />}
+                  {module.content.type === 'quiz' && <CheckCircle className="w-4 h-4" />}
                   <span>{module.content.title}</span>
                 </div>
               ))}

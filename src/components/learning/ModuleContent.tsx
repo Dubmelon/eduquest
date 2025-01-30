@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { Module } from "@/types/curriculum";
 import { ModuleHeader } from "./ModuleHeader";
 import { LearningObjectives } from "./LearningObjectives";
@@ -25,6 +26,11 @@ export const ModuleContent = ({ module }: ModuleContentProps) => {
       };
     } catch (error) {
       console.error('Error loading progress:', error);
+      toast({
+        variant: "destructive",
+        title: "Error loading progress",
+        description: "Your progress could not be loaded. Starting fresh.",
+      });
       return {
         completedResources: [],
         completedQuizzes: [],
@@ -57,6 +63,10 @@ export const ModuleContent = ({ module }: ModuleContentProps) => {
     
     try {
       localStorage.setItem(`module-progress-${module.id}`, JSON.stringify(finalProgress));
+      toast({
+        title: "Progress saved",
+        description: `Overall progress: ${overallProgress}%`,
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
       toast({
@@ -99,9 +109,11 @@ export const ModuleContent = ({ module }: ModuleContentProps) => {
 
   if (!module) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
-        No module content available
-      </div>
+      <Alert>
+        <AlertDescription>
+          No module content available
+        </AlertDescription>
+      </Alert>
     );
   }
 
