@@ -6,7 +6,7 @@ import { FileUploadZone } from "@/components/curriculum/FileUploadZone";
 import { DefaultImportButton } from "@/components/curriculum/DefaultImportButton";
 import { importCurriculumFromFile, importDefaultCurriculum } from "@/lib/curriculum/importHelpers";
 
-const CurriculumImport: React.FC = () => {
+export const CurriculumImport: React.FC = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
