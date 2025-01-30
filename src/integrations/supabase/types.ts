@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      curriculum_templates: {
+        Row: {
+          content: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          template_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          template_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          template_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       curriculum_versions: {
         Row: {
           created_at: string | null
@@ -82,6 +118,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      imported_curricula: {
+        Row: {
+          created_at: string | null
+          curriculum: Json
+          id: string
+          metadata: Json | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          curriculum: Json
+          id?: string
+          metadata?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          curriculum?: Json
+          id?: string
+          metadata?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       messages: {
         Row: {
