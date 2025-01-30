@@ -65,7 +65,10 @@ export class CurriculumLoader {
               duration: resource.duration,
               url: resource.url,
               embedType: resource.embedType as "youtube" | undefined,
-              code: resource.code
+              code: resource.code ? {
+                initialCode: resource.code.initialCode || '',
+                testCases: resource.code.testCases || []
+              } : undefined
             })),
             assignments: (moduleData.assignments || []).map(assignment => ({
               id: assignment.id,
@@ -76,8 +79,8 @@ export class CurriculumLoader {
               questions: assignment.questions?.map(q => ({
                 ...q,
                 type: q.type as 'multiple-choice' | 'essay' | 'coding',
-                initialCode: q.initialCode,
-                testCases: q.testCases
+                initialCode: q.initialCode || '',
+                testCases: q.testCases || []
               })) || []
             })),
             quizzes: (moduleData.quizzes || []).map(quiz => ({
@@ -88,8 +91,8 @@ export class CurriculumLoader {
                 ...q,
                 type: q.type as 'multiple-choice' | 'essay' | 'coding',
                 description: q.description || '',
-                initialCode: q.initialCode,
-                testCases: q.testCases
+                initialCode: q.initialCode || '',
+                testCases: q.testCases || []
               }))
             })),
             content: {

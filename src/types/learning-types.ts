@@ -30,6 +30,13 @@ export interface Resource {
   duration?: string;
   url?: string;
   embedType?: 'youtube';
+  code?: {
+    initialCode: string;
+    testCases: Array<{
+      input: string;
+      expectedOutput: string;
+    }>;
+  };
 }
 
 export interface Assessment {
@@ -40,6 +47,11 @@ export interface Assessment {
   difficultyLevel: DifficultyLevel;
   points: number;
   timeLimit?: number;
+  initialCode?: string;
+  testCases?: Array<{
+    input: string;
+    expectedOutput: string;
+  }>;
   rubric?: {
     criteria: {
       name: string;
