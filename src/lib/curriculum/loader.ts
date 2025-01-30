@@ -25,8 +25,19 @@ export class CurriculumLoader {
         ...course,
         level: course.level as Course['level'],
         modules: course.modules
-          .map(moduleId => modulesData.find(m => m.id === moduleId))
-          .filter((module): module is Module => module !== undefined)
+          .map(moduleId => {
+            const module = modulesData.find(m => m.id === moduleId);
+            if (!module) return null;
+            return {
+              ...module,
+              metadata: {
+                ...module.metadata,
+                tags: module.metadata?.tags || [],
+                skills: module.metadata?.skills || []
+              }
+            };
+          })
+          .filter((module): module is Module => module !== null)
       }));
       console.log("Courses loaded successfully:", courses);
       return courses;
@@ -39,7 +50,14 @@ export class CurriculumLoader {
   static async loadModules(): Promise<Module[]> {
     try {
       console.log("Loading modules data...");
-      const modules = modulesData as Module[];
+      const modules = modulesData.map(module => ({
+        ...module,
+        metadata: {
+          ...module.metadata,
+          tags: module.metadata?.tags || [],
+          skills: module.metadata?.skills || []
+        }
+      })) as Module[];
       console.log("Modules loaded successfully:", modules);
       return modules;
     } catch (error) {

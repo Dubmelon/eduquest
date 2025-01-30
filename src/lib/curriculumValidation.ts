@@ -68,14 +68,21 @@ const courseSchema = z.object({
   modules: z.array(moduleSchema).default([])
 });
 
-const degreeSchema = z.object({
+export const degreeSchema = z.object({
   id: z.string(),
   title: z.string(),
   type: z.string(),
   description: z.string().default('No description provided'),
   requiredCredits: z.number().default(0),
   courses: z.array(courseSchema).default([])
-});
+}).transform((data) => ({
+  id: data.id,
+  title: data.title,
+  type: data.type,
+  description: data.description,
+  requiredCredits: data.requiredCredits,
+  courses: data.courses
+}));
 
 export const curriculumSchema = z.object({
   name: z.string(),
