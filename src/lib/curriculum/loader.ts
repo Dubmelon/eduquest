@@ -96,7 +96,7 @@ export class CurriculumLoader {
               content: resource.content,
               duration: resource.duration,
               url: resource.url,
-              embedType: resource.embedType as "youtube" | undefined,
+              embedType: resource.embedType,
               code: resource.code ? {
                 initialCode: resource.code.initialCode || '',
                 testCases: resource.code.testCases || []
