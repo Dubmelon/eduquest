@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { CurriculumImport } from "@/components/CurriculumImport";
+import CurriculumImport from "@/components/CurriculumImport";
 import { ImportedCurriculaList } from "@/components/curriculum/ImportedCurriculaList";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
