@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import type { ModuleListProps, ModuleContent, Module } from "@/types/learning-types";
+import type { ModuleListProps, ModuleContent } from "@/types/learning-types";
 
 const ModuleListSkeleton = () => (
   <div className="space-y-4">
@@ -61,13 +61,14 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
 
   // Group modules by course
   const courseGroups = modules.reduce((acc, module) => {
+    if (!module.content) return acc;
     const courseId = module.content.courseId || 'uncategorized';
     if (!acc[courseId]) {
       acc[courseId] = [];
     }
     acc[courseId].push(module);
     return acc;
-  }, {} as Record<string, Module[]>);
+  }, {} as Record<string, typeof modules>);
 
   return (
     <ScrollArea className="h-[calc(100vh-12rem)]">
@@ -93,16 +94,18 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
             </CollapsibleTrigger>
             <CollapsibleContent className="pl-6 mt-2 space-y-2">
               {courseModules.map((module) => (
-                <div
-                  key={module.content.id}
-                  className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg cursor-pointer"
-                  onClick={() => onModuleSelect(module.content)}
-                >
-                  {module.content.type === 'resource' && <BookOpen className="w-4 h-4" />}
-                  {module.content.type === 'assignment' && <FileText className="w-4 h-4" />}
-                  {module.content.type === 'quiz' && <CheckCircle className="w-4 h-4" />}
-                  <span>{module.content.title}</span>
-                </div>
+                module.content && (
+                  <div
+                    key={module.content.id}
+                    className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg cursor-pointer"
+                    onClick={() => onModuleSelect(module.content)}
+                  >
+                    {module.content.type === 'resource' && <BookOpen className="w-4 h-4" />}
+                    {module.content.type === 'assignment' && <FileText className="w-4 h-4" />}
+                    {module.content.type === 'quiz' && <CheckCircle className="w-4 h-4" />}
+                    <span>{module.content.title}</span>
+                  </div>
+                )
               ))}
             </CollapsibleContent>
           </Collapsible>

@@ -42,11 +42,13 @@ export class CurriculumLoader {
         modules: course.modules.map(moduleId => {
           const moduleData = modulesData.find(m => m.id === moduleId);
           if (!moduleData) return null;
-          return {
+          
+          const module: Module = {
             id: moduleData.id,
             title: moduleData.title,
             description: moduleData.description || '',
             credits: moduleData.credits || 0,
+            type: 'resource',
             metadata: {
               estimatedTime: moduleData.metadata?.estimatedTime || 0,
               difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
@@ -56,17 +58,18 @@ export class CurriculumLoader {
             },
             learningObjectives: moduleData.learningObjectives || [],
             resources: moduleData.resources || [],
-            assessments: [],
-            milestones: [],
-            type: moduleData.type || 'resource',
+            assignments: [],
+            quizzes: [],
             content: {
               id: moduleData.id,
               title: moduleData.title,
-              type: moduleData.type || 'resource',
+              type: 'resource',
               description: moduleData.description || '',
               courseId: course.id
             }
-          } as Module;
+          };
+          
+          return module;
         }).filter((module): module is Module => module !== null)
       }));
     } catch (error) {

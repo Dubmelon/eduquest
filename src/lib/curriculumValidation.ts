@@ -27,3 +27,28 @@ const programSchema = z.object({
 export function validateProgram(data: unknown): Program {
   return programSchema.parse(data) as Program;
 }
+
+export function validateAndTransformCurriculum(data: unknown): Program {
+  // First validate the data structure
+  const validatedData = validateProgram(data);
+  
+  // Transform and return the validated data
+  return {
+    name: validatedData.name,
+    description: validatedData.description,
+    programOutcomes: validatedData.programOutcomes,
+    institution: validatedData.institution,
+    complianceStandards: validatedData.complianceStandards,
+    degrees: validatedData.degrees.map(degree => ({
+      id: degree.id,
+      title: degree.title,
+      type: degree.type,
+      description: degree.description,
+      requiredCredits: degree.requiredCredits,
+      courses: degree.courses.map(course => ({
+        ...course,
+        modules: course.modules || []
+      }))
+    }))
+  };
+}
