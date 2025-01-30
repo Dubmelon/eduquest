@@ -3,6 +3,7 @@ import programData from '@/data/curriculum/New defaults/program.json';
 import coursesData from '@/data/curriculum/New defaults/courses.json';
 import modulesData from '@/data/curriculum/New defaults/modules.json';
 import { AppError } from '@/lib/errorHandling';
+import { DifficultyLevel } from '@/types/learning-types';
 
 export class CurriculumLoader {
   static async loadProgram(): Promise<Program> {
@@ -49,7 +50,7 @@ export class CurriculumLoader {
             type: moduleData.type as 'resource' | 'assignment' | 'quiz',
             metadata: {
               estimatedTime: moduleData.metadata?.estimatedTime || 0,
-              difficulty: moduleData.metadata?.difficulty || 'beginner',
+              difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
               prerequisites: moduleData.metadata?.prerequisites || [],
               tags: moduleData.metadata?.tags || [],
               skills: moduleData.metadata?.skills || []
@@ -85,7 +86,7 @@ export class CurriculumLoader {
         type: moduleData.type as 'resource' | 'assignment' | 'quiz',
         metadata: {
           estimatedTime: moduleData.metadata?.estimatedTime || 0,
-          difficulty: moduleData.metadata?.difficulty || 'beginner',
+          difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
           prerequisites: moduleData.metadata?.prerequisites || [],
           tags: moduleData.metadata?.tags || [],
           skills: moduleData.metadata?.skills || []
