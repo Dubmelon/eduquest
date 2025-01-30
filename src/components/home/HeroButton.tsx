@@ -15,10 +15,10 @@ export const HeroButton = ({
   return (
     <button
       className={cn(
-        "px-8 py-3 rounded-full font-medium transition-all duration-200",
+        "px-8 py-3 rounded-full font-medium transition-all duration-200 hover:scale-[1.02]",
         variant === "primary" 
           ? "bg-primary text-primary-foreground hover:opacity-90" 
-          : "border border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800",
+          : "bg-secondary text-secondary-foreground hover:bg-secondary/90",
         className
       )}
       {...props}

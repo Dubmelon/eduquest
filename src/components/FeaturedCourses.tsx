@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase"; // Fixed import path
+import { supabase } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Clock } from "lucide-react";
 
 interface Course {
   id: string;
@@ -18,24 +22,17 @@ interface Course {
 export const FeaturedCourses = () => {
   const { toast } = useToast();
   
-  const { data: courses, isLoading, error } = useQuery<Course[]>({
+  const { data: courses, isLoading, error } = useQuery({
     queryKey: ['featured-courses'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
-        .select(`
-          id,
-          title,
-          description,
-          level,
-          metadata,
-          created_at
-        `)
+        .select('*')
         .limit(3)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Course[];
     },
   });
 
@@ -48,7 +45,7 @@ export const FeaturedCourses = () => {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-background dark:to-background/80">
+    <section id="featured-courses" className="py-20">
       <div className="container px-4 mx-auto">
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl font-bold mb-4">Featured Courses</h2>
@@ -59,17 +56,20 @@ export const FeaturedCourses = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {isLoading ? (
-            // Loading skeletons
             [...Array(3)].map((_, index) => (
-              <div key={index} className="glass-panel rounded-2xl p-6">
-                <Skeleton className="h-6 w-24 mb-4" />
-                <Skeleton className="h-8 w-full mb-2" />
-                <Skeleton className="h-20 w-full mb-4" />
-                <div className="flex items-center justify-between">
+              <Card key={index} className="bg-card/50 backdrop-blur-sm border-border/50">
+                <CardHeader>
+                  <Skeleton className="h-6 w-24 mb-4" />
+                  <Skeleton className="h-8 w-full mb-2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-20 w-full mb-4" />
+                </CardContent>
+                <CardFooter className="flex justify-between">
                   <Skeleton className="h-4 w-20" />
                   <Skeleton className="h-4 w-24" />
-                </div>
-              </div>
+                </CardFooter>
+              </Card>
             ))
           ) : (
             courses?.map((course, index) => (
@@ -78,21 +78,27 @@ export const FeaturedCourses = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="glass-panel rounded-2xl p-6 hover-scale"
               >
-                <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-primary/10 text-primary mb-4">
-                  {course.level || 'All Levels'}
-                </span>
-                <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-                <p className="text-muted-foreground mb-4">{course.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {course.metadata?.duration || 'Self-paced'}
-                  </span>
-                  <button className="text-primary font-medium hover:underline">
-                    Learn more
-                  </button>
-                </div>
+                <Card className="h-full hover:shadow-lg transition-shadow bg-card/50 backdrop-blur-sm border-border/50">
+                  <CardHeader>
+                    <Badge variant="secondary" className="w-fit">
+                      {course.level || 'All Levels'}
+                    </Badge>
+                    <h3 className="text-xl font-bold mt-2">{course.title}</h3>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{course.description}</p>
+                  </CardContent>
+                  <CardFooter className="flex items-center justify-between">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {course.metadata?.duration || 'Self-paced'}
+                    </div>
+                    <Button variant="ghost" className="font-medium">
+                      Learn more
+                    </Button>
+                  </CardFooter>
+                </Card>
               </motion.div>
             ))
           )}
