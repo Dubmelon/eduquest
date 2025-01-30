@@ -1,4 +1,4 @@
-import type { Program, Course, Module } from '@/types/curriculum';
+import type { Program, Course, Module, Resource } from '@/types/curriculum';
 import programData from '@/data/curriculum/New defaults/program.json';
 import coursesData from '@/data/curriculum/New defaults/courses.json';
 import modulesData from '@/data/curriculum/New defaults/modules.json';
@@ -57,9 +57,17 @@ export class CurriculumLoader {
               skills: moduleData.metadata?.skills || []
             },
             learningObjectives: moduleData.learningObjectives || [],
-            resources: moduleData.resources || [],
-            assignments: [],
-            quizzes: [],
+            resources: (moduleData.resources || []).map(resource => ({
+              id: resource.id,
+              title: resource.title,
+              type: resource.type,
+              content: resource.content,
+              duration: resource.duration,
+              url: resource.url,
+              embedType: resource.embedType as "youtube" | undefined
+            })),
+            assignments: moduleData.assignments || [],
+            quizzes: moduleData.quizzes || [],
             content: {
               id: moduleData.id,
               title: moduleData.title,
