@@ -18,6 +18,13 @@ export interface Resource {
   duration?: string;
   url?: string;
   embedType?: 'youtube';
+  code?: {
+    initialCode: string;
+    testCases: Array<{
+      input: string;
+      expectedOutput: string;
+    }>;
+  };
 }
 
 export interface Question {
@@ -28,6 +35,11 @@ export interface Question {
   points: number;
   options?: string[];
   correctAnswer?: number;
+  initialCode?: string;
+  testCases?: Array<{
+    input: string;
+    expectedOutput: string;
+  }>;
 }
 
 export interface Assignment {

@@ -64,7 +64,8 @@ export class CurriculumLoader {
               content: resource.content,
               duration: resource.duration,
               url: resource.url,
-              embedType: resource.embedType as "youtube" | undefined
+              embedType: resource.embedType as "youtube" | undefined,
+              code: resource.code
             })),
             assignments: (moduleData.assignments || []).map(assignment => ({
               id: assignment.id,
@@ -74,7 +75,9 @@ export class CurriculumLoader {
               points: assignment.points,
               questions: assignment.questions?.map(q => ({
                 ...q,
-                type: q.type as 'multiple-choice' | 'essay' | 'coding'
+                type: q.type as 'multiple-choice' | 'essay' | 'coding',
+                initialCode: q.initialCode,
+                testCases: q.testCases
               })) || []
             })),
             quizzes: (moduleData.quizzes || []).map(quiz => ({
@@ -84,7 +87,9 @@ export class CurriculumLoader {
               questions: quiz.questions.map(q => ({
                 ...q,
                 type: q.type as 'multiple-choice' | 'essay' | 'coding',
-                description: q.description || ''
+                description: q.description || '',
+                initialCode: q.initialCode,
+                testCases: q.testCases
               }))
             })),
             content: {
