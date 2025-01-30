@@ -7,7 +7,7 @@ import { ModuleCard } from "@/components/learning/ModuleCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import type { ModuleListProps } from "@/types/learning-types";
+import type { ModuleListProps, Module } from "@/types/learning-types";
 
 const ModuleListSkeleton = () => (
   <div className="space-y-4">
@@ -68,7 +68,7 @@ export const ModuleList = ({ curriculumId, onModuleSelect }: ModuleListProps) =>
     }
     acc[courseId].push(module);
     return acc;
-  }, {} as Record<string, typeof modules>);
+  }, {} as Record<string, Module[]>);
 
   return (
     <ScrollArea className="h-[calc(100vh-12rem)]">
