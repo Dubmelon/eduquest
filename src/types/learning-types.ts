@@ -13,11 +13,13 @@ export interface ModuleListProps {
 
 export interface QuizPlayerProps {
   quiz: Quiz;
+  isCompleted?: boolean;
   onComplete: (score: number) => void;
 }
 
 export interface ResourceViewerProps {
   resource: Resource;
+  isCompleted?: boolean;
   onComplete: () => void;
 }
 
