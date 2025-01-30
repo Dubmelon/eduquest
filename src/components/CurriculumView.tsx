@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { CourseCard } from '@/components/home/CourseCard';
-import { CurriculumManager } from '@/lib/curriculum/manager';
-import type { Program, Course } from '@/types/curriculum';
+import { useCurriculumStore } from '@/lib/curriculum/state';
 import { useToast } from '@/hooks/use-toast';
 
 interface CurriculumViewProps {
@@ -9,18 +8,14 @@ interface CurriculumViewProps {
 }
 
 export const CurriculumView = ({ programId }: CurriculumViewProps) => {
-  const [manager] = useState(() => new CurriculumManager());
-  const [program, setProgram] = useState<Program | null>(null);
+  const { program, initialize } = useCurriculumStore();
   const { toast } = useToast();
 
   useEffect(() => {
     const init = async () => {
       try {
-        console.log("Initializing curriculum manager...");
-        await manager.initialize();
-        const loadedProgram = manager.getProgram();
-        console.log("Loaded program:", loadedProgram);
-        setProgram(loadedProgram);
+        console.log("Initializing curriculum store...");
+        await initialize();
       } catch (error) {
         console.error("Error loading curriculum:", error);
         toast({
@@ -31,7 +26,7 @@ export const CurriculumView = ({ programId }: CurriculumViewProps) => {
       }
     };
     init();
-  }, [programId]);
+  }, [programId, initialize, toast]);
 
   if (!program) {
     return (
