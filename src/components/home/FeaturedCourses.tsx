@@ -34,7 +34,11 @@ export const FeaturedCourses = () => {
         {courses.map((course) => (
           <CourseCard
             key={course.id}
-            course={course}
+            course={{
+              ...course,
+              category: 'Featured',
+              duration: `${course.credits} credits`
+            }}
             index={0}
             modules={[]}
           />

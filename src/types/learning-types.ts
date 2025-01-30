@@ -22,16 +22,14 @@ export interface LearningObjective {
   assessmentCriteria: string[];
 }
 
-export interface Certification {
+export interface Resource {
   id: string;
   title: string;
-  description: string;
-  requirements: {
-    minimumGrade: number;
-    requiredModules: string[];
-    requiredAssessments: string[];
-  };
-  validityPeriod?: number;
+  type: string;
+  content: string;
+  duration?: string;
+  url?: string;
+  embedType?: 'youtube';
 }
 
 export interface Assessment {
@@ -56,6 +54,7 @@ export interface Module {
   title: string;
   description: string;
   metadata: ModuleMetadata;
+  content: ModuleContent;
   learningObjectives: LearningObjective[];
   resources: Resource[];
   assessments: Assessment[];
@@ -68,4 +67,9 @@ export interface Module {
       value: string | number;
     };
   }[];
+}
+
+export interface ModuleListProps {
+  curriculumId: string;
+  onModuleSelect: (module: ModuleContent) => void;
 }

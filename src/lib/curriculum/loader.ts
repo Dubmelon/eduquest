@@ -46,8 +46,7 @@ export class CurriculumLoader {
             id: moduleData.id,
             title: moduleData.title,
             description: moduleData.description || '',
-            credits: 0,
-            type: moduleData.type as 'resource' | 'assignment' | 'quiz',
+            type: moduleData.type || 'resource',
             metadata: {
               estimatedTime: moduleData.metadata?.estimatedTime || 0,
               difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
@@ -58,54 +57,20 @@ export class CurriculumLoader {
             content: {
               id: moduleData.id,
               title: moduleData.title,
-              type: moduleData.type as 'resource' | 'assignment' | 'quiz',
+              type: moduleData.type || 'resource',
               description: moduleData.description || '',
               courseId: course.id
             },
             learningObjectives: [],
             resources: [],
-            assignments: [],
-            quizzes: []
+            assessments: [],
+            milestones: []
           } as Module;
         }).filter((module): module is Module => module !== null)
       }));
     } catch (error) {
       console.error("Failed to load courses data:", error);
       throw new AppError('Failed to load courses data', 'COURSES_LOAD_ERROR');
-    }
-  }
-
-  static async loadModules(): Promise<Module[]> {
-    try {
-      console.log("Loading modules data...");
-      return modulesData.map(moduleData => ({
-        id: moduleData.id,
-        title: moduleData.title,
-        description: moduleData.description || '',
-        credits: 0,
-        type: moduleData.type as 'resource' | 'assignment' | 'quiz',
-        metadata: {
-          estimatedTime: moduleData.metadata?.estimatedTime || 0,
-          difficulty: (moduleData.metadata?.difficulty || 'beginner') as DifficultyLevel,
-          prerequisites: moduleData.metadata?.prerequisites || [],
-          tags: moduleData.metadata?.tags || [],
-          skills: moduleData.metadata?.skills || []
-        },
-        content: {
-          id: moduleData.id,
-          title: moduleData.title,
-          type: moduleData.type as 'resource' | 'assignment' | 'quiz',
-          description: moduleData.description || '',
-          courseId: '' // This will be set when the module is associated with a course
-        },
-        learningObjectives: [],
-        resources: [],
-        assignments: [],
-        quizzes: []
-      }));
-    } catch (error) {
-      console.error("Failed to load modules data:", error);
-      throw new AppError('Failed to load modules data', 'MODULES_LOAD_ERROR');
     }
   }
 }
