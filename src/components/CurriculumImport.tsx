@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { validateAndTransformCurriculum } from "@/lib/curriculumValidation";
@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FileUp, Upload } from "lucide-react";
 
-export const CurriculumImport = () => {
+const CurriculumImport: React.FC = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -219,3 +219,5 @@ export const CurriculumImport = () => {
     </div>
   );
 };
+
+export default CurriculumImport;

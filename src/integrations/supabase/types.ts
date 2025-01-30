@@ -17,7 +17,9 @@ export type Database = {
           id: string
           module_id: string | null
           points: number | null
+          status: string | null
           title: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -26,7 +28,9 @@ export type Database = {
           id?: string
           module_id?: string | null
           points?: number | null
+          status?: string | null
           title: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -35,7 +39,9 @@ export type Database = {
           id?: string
           module_id?: string | null
           points?: number | null
+          status?: string | null
           title?: string
+          user_id?: string | null
         }
         Relationships: [
           {
