@@ -17,6 +17,13 @@ export interface Resource {
   duration?: string;
   url?: string;
   embedType?: 'youtube';
+  code?: {
+    initialCode: string;
+    testCases: Array<{
+      input: string;
+      expectedOutput: string;
+    }>;
+  };
 }
 
 export interface LearningObjective {
@@ -47,6 +54,13 @@ export interface Question {
   title: string;
   description: string;
   points: number;
+  options?: string[];
+  correctAnswer?: number;
+  initialCode?: string;
+  testCases?: Array<{
+    input: string;
+    expectedOutput: string;
+  }>;
 }
 
 export interface Module {
@@ -54,6 +68,7 @@ export interface Module {
   title: string;
   description: string;
   credits: number;
+  type?: 'resource' | 'assignment' | 'quiz';
   metadata: ModuleMetadata;
   learningObjectives: LearningObjective[];
   resources: Resource[];
@@ -93,4 +108,15 @@ export interface Program {
   institution: string;
   complianceStandards: string[];
   degrees: Degree[];
+}
+
+export interface Curriculum {
+  name: string;
+  description: string;
+  degrees: Degree[];
+}
+
+export interface CourseCard extends Course {
+  category: string;
+  duration: string;
 }

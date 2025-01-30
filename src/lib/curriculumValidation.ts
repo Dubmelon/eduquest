@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Program, Course, Module } from "@/types/curriculum";
+import type { Program } from "@/types/curriculum";
 
 const moduleMetadataSchema = z.object({
   estimatedTime: z.number().default(0),
@@ -16,7 +16,14 @@ const resourceSchema = z.object({
   content: z.string(),
   duration: z.string().optional(),
   url: z.string().optional(),
-  embedType: z.enum(['youtube']).optional()
+  embedType: z.enum(['youtube']).optional(),
+  code: z.object({
+    initialCode: z.string(),
+    testCases: z.array(z.object({
+      input: z.string(),
+      expectedOutput: z.string()
+    }))
+  }).optional()
 });
 
 const learningObjectiveSchema = z.object({
@@ -30,7 +37,14 @@ const questionSchema = z.object({
   type: z.enum(['multiple-choice', 'essay', 'coding']),
   title: z.string(),
   description: z.string(),
-  points: z.number()
+  points: z.number(),
+  options: z.array(z.string()).optional(),
+  correctAnswer: z.number().optional(),
+  initialCode: z.string().optional(),
+  testCases: z.array(z.object({
+    input: z.string(),
+    expectedOutput: z.string()
+  })).optional()
 });
 
 const assignmentSchema = z.object({
@@ -54,11 +68,19 @@ const moduleSchema = z.object({
   title: z.string(),
   description: z.string(),
   credits: z.number(),
+  type: z.enum(['resource', 'assignment', 'quiz']).optional(),
   metadata: moduleMetadataSchema,
   learningObjectives: z.array(learningObjectiveSchema),
   resources: z.array(resourceSchema),
   assignments: z.array(assignmentSchema),
-  quizzes: z.array(quizSchema)
+  quizzes: z.array(quizSchema),
+  content: z.object({
+    id: z.string(),
+    title: z.string(),
+    type: z.enum(['resource', 'assignment', 'quiz']),
+    description: z.string(),
+    courseId: z.string().optional()
+  }).optional()
 });
 
 const courseSchema = z.object({
@@ -89,13 +111,14 @@ const programSchema = z.object({
 });
 
 export const validateAndTransformProgram = (data: unknown): Program => {
-  console.log("Validating program data:", data);
   try {
-    const validationResult = programSchema.parse(data);
-    console.log("Program validation successful:", validationResult);
-    return validationResult;
+    return programSchema.parse(data);
   } catch (error) {
     console.error("Program validation error:", error);
     throw error;
   }
+};
+
+export const validateAndTransformCurriculum = (data: unknown): Program => {
+  return validateAndTransformProgram(data);
 };
